@@ -3,7 +3,8 @@
 
 
 
-class Scene {
+class Scene
+{
 public:
 	virtual ~Scene() {};
 	virtual void init() = 0;

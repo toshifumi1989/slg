@@ -1,20 +1,21 @@
 #include <stdlib.h>
 #include "camera.h"
-#include "cursor.h"
+#include "../play/cursor.h"
 #include "../glut.h"
 
 Camera *camera;
 extern Cursor *cursor;
 
-void Camera::update() {
-	float cameraDistance = 5;
-	float cameraHeight = 10;
-	pos = glm::vec3(cursor->pos.x + cameraDistance, cursor->pos.y + cameraHeight, cursor->pos.z + cameraDistance);
+void Camera::update() 
+{
+	const int cameraDistance = 20;
+	pos = glm::vec3(cursor->pos.x - cameraDistance, cursor->pos.y + cameraHeight, cursor->pos.z - cameraDistance);
 
-
+	target = cursor->pos;
 }
 
-void Camera::draw() {
+void Camera::draw() 
+{
 
 	glMatrixMode(GL_PROJECTION);	// “Š‰e•ÏŠ·s—ñ‚Ìİ’è
 	glLoadIdentity();				// •ÏŠ·s—ñ‚Ì‰Šú‰»
@@ -32,6 +33,7 @@ void Camera::draw() {
 
 }
 
-void Camera::twoDimensionCamera() {
+void Camera::twoDimensionCamera()
+{
 
 }

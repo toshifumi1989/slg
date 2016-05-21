@@ -7,7 +7,8 @@
 #include <vector>
 #include "../glut.h"
 
-class Texture {
+class Texture
+{
 public:
 	//F‚ÌRGB‚Ì’l
 	typedef struct { unsigned char b, g, r; }RGB;

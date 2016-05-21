@@ -1,17 +1,20 @@
 #include "tittle.h"
 
-void Tittle::init() {
+void Tittle::init()
+{
 
 
 
 }
 
-void Tittle::update() {
+void Tittle::update()
+{
 
 
 
 }
 
-void Tittle::draw() {
+void Tittle::draw() 
+{
 
 }

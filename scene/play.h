@@ -3,7 +3,8 @@
 
 #include "scene.h"
 
-class Play : public Scene {
+class Play : public Scene
+{
 public:
 	void init();
 	void update();

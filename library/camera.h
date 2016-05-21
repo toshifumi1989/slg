@@ -3,7 +3,8 @@
 
 #include "../glm/glm.hpp"
 
-class Camera {
+class Camera
+{
 public:
 	Camera() :
 		angle(60.0f),
@@ -18,7 +19,9 @@ public:
 
 		pos(0, 20, -4),
 		target(0, 0, 0),
-		up(0, 1, 0)
+		up(0, 1, 0),
+
+		cameraHeight(50)
 	{}
 
 	float angle;		//表示角度
@@ -34,6 +37,8 @@ public:
 	glm::vec3 pos;		//カメラの位置
 	glm::vec3 target;	//カメラの向き
 	glm::vec3 up;		//カメラの上の向き
+
+	float cameraHeight;	//カメラの高さ
 
 	void update();		//カメラの更新
 	void draw();		//カメラの描画

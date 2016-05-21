@@ -7,7 +7,8 @@ GLuint textures[1];
 ///////////////////////////////////////
 //テクスチャ読み込み
 ///////////////////////////////////////
-void Texture::read(const char* _texture) {
+void Texture::read(const char* _texture)
+{
 
 	FILE *pFile = fopen(_texture, "rb");
 	assert(pFile != NULL);
@@ -27,15 +28,18 @@ void Texture::read(const char* _texture) {
 	fclose(pFile);
 
 	//RGBのRとBの入れ替え
-	for (int i = 0; i < bi.biWidth * bi.biHeight; i++) {
+	for (int i = 0; i < bi.biWidth * bi.biHeight; i++) 
+	{
 		char sub = pixels[i].b;
 		pixels[i].b = pixels[i].r;
 		pixels[i].r = sub;
 	}
 
 	//画像の上下反転
-	for (int p = 0; p < bi.biHeight / 2; p++) {
-		for (int q = 0; q < bi.biWidth; q++) {
+	for (int p = 0; p < bi.biHeight / 2; p++)
+	{
+		for (int q = 0; q < bi.biWidth; q++) 
+		{
 			RGB sub = pixels[bi.biWidth * p + q];
 			pixels[bi.biWidth * p + q] = pixels[bi.biWidth *(bi.biHeight - 1 - p) + q];
 			pixels[bi.biWidth *(bi.biHeight - 1 - p) + q] = sub;
@@ -59,7 +63,8 @@ void Texture::read(const char* _texture) {
 ///////////////////////////////////////////
 //テクスチャ読み込み（アルファ
 //////////////////////////////////////////
-void Texture::read_alpha(const char* _texture) {
+void Texture::read_alpha(const char* _texture)
+{
 	BITMAPFILEHEADER bf;
 	BITMAPINFOHEADER bi;
 
@@ -78,8 +83,10 @@ void Texture::read_alpha(const char* _texture) {
 	fclose(pFile);
 
 	//画像の上下反転
-	for (int p = 0; p < bi.biHeight / 2; p++) {
-		for (int q = 0; q < bi.biWidth; q++) {
+	for (int p = 0; p < bi.biHeight / 2; p++)
+	{
+		for (int q = 0; q < bi.biWidth; q++)
+		{
 			RGB sub = pixels[bi.biWidth * p + q];
 			pixels[bi.biWidth * p + q] = pixels[bi.biWidth *(bi.biHeight - 1 - p) + q];
 			pixels[bi.biWidth *(bi.biHeight - 1 - p) + q] = sub;
@@ -88,7 +95,8 @@ void Texture::read_alpha(const char* _texture) {
 
 
 	//RGBをアルファに切り替え
-	for (int i = 0; i < bi.biWidth * bi.biHeight; i++) {
+	for (int i = 0; i < bi.biWidth * bi.biHeight; i++)
+	{
 		int sub = (pixels[i].r + pixels[i].g + pixels[i].b) / 3;
 		alpha.push_back(sub);
 	}

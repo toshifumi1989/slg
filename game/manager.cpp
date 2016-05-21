@@ -11,8 +11,10 @@ Manager* Manager::instance = nullptr;
 //////////////////////////////////////
 //インスタンス
 //////////////////////////////////////
-Manager* Manager::getInstance() {
-	if (nullptr == instance) {
+Manager* Manager::getInstance() 
+{
+	if (nullptr == instance)
+	{
 		instance = new Manager();
 
 	}
@@ -22,7 +24,8 @@ Manager* Manager::getInstance() {
 ////////////////////////////////////////////
 //マネージャの更新
 ////////////////////////////////////////////
-void Manager::update() {
+void Manager::update()
+{
 	_scene.run(this, 1.0f / 60.0f);
 }
 
@@ -30,8 +33,10 @@ void Manager::update() {
 ///////////////////////////////////////////
 //タイトルシーン
 ///////////////////////////////////////////
-void Manager::sceneTitle(float delta) {
-	if (_scene.getTime() == 0.0f) {
+void Manager::sceneTitle(float delta)
+{
+	if (_scene.getTime() == 0.0f)
+	{
 		
 		scene = new Tittle();
 		scene->init();
@@ -44,8 +49,10 @@ void Manager::sceneTitle(float delta) {
 //////////////////////////////////////////////
 //プレイシーン
 //////////////////////////////////////////////
-void Manager::scenePlay(float delta) {
-	if (_scene.getTime() == 0.0f) {
+void Manager::scenePlay(float delta) 
+{
+	if (_scene.getTime() == 0.0f)
+	{
 
 		scene = new Play();
 		scene->init();
@@ -58,8 +65,10 @@ void Manager::scenePlay(float delta) {
 /////////////////////////////////////////////
 //リザルトシーン
 /////////////////////////////////////////////
-void Manager::sceneResult(float delta) {
-	if (_scene.getTime() == 0.0f) {
+void Manager::sceneResult(float delta)
+{
+	if (_scene.getTime() == 0.0f)
+	{
 
 		scene = new Result();
 		scene->init();

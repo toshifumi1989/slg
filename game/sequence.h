@@ -3,7 +3,8 @@
 
 #include <assert.h>
 
-template<class T> class Sequence {
+template<class T> class Sequence
+{
 public:
 	typedef void (T::*Process)(float);
 
@@ -15,7 +16,8 @@ public:
 	{}
 	~Sequence() {}
 
-	inline void run(T* obj, const float delta) {
+	inline void run(T* obj, const float delta) 
+	{
 		if (!_now && !_next) return;
 		if (_next) {
 			_prev = _now;
@@ -27,7 +29,8 @@ public:
 		_time += delta;
 	}
 
-	inline void change(const Process sequence = nullptr) {
+	inline void change(const Process sequence = nullptr)
+	{
 		if (!sequence && !_next) {
 			assert(0);
 		}

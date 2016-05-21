@@ -3,7 +3,8 @@
 
 #include "scene.h"
 
-class Tittle :public Scene{
+class Tittle :public Scene
+{
 public:
 	void init();
 	void update();

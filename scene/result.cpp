@@ -1,14 +1,17 @@
 #include"result.h"
 
 
-void Result::init() {
+void Result::init()
+{
 
 }
 
-void Result::update() {
+void Result::update() 
+{
 
 }
 
-void Result::draw() {
+void Result::draw()
+{
 
 }

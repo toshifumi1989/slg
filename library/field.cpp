@@ -6,19 +6,22 @@ Field *field;
 /////////////////////////////
 //フィールド準備
 /////////////////////////////
-void Field::setup() {
+void Field::setup() 
+{
 
-	for (int z = 0; z < vtx; z++) {
-		for (int x = 0; x < vtx; x++) {
+	for (int z = 0; z < vtx; z++) 
+	{
+		for (int x = 0; x < vtx; x++) 
+		{
 
 			//texture
 			tex.push_back((float)x / (vtx - 1));
 			tex.push_back((float)z / (vtx - 1));
 
 			//vertex
-			vertex.push_back((float)x * 2);
+			vertex.push_back((float)x );
 			vertex.push_back(0);
-			vertex.push_back((float)z * 2);
+			vertex.push_back((float)z );
 
 			//normal
 			normal.push_back(0);
@@ -27,8 +30,10 @@ void Field::setup() {
 		}
 	}
 
-	for (int z = 0; z < vtx - 1; z++) {//行の数
-		for (int x = 0; x < vtx - 1; x++) {//列の数
+	for (int z = 0; z < vtx - 1; z++)
+	{//行の数
+		for (int x = 0; x < vtx - 1; x++)
+		{//列の数
 
 			//index
 			index.push_back(vtx * z + x);
@@ -45,7 +50,8 @@ void Field::setup() {
 ////////////////////////////////////
 //フィールド描画
 ////////////////////////////////////
-void Field::draw() {
+void Field::draw() 
+{
 	glPushMatrix();
 	{
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
@@ -80,7 +86,8 @@ void Field::draw() {
 /////////////////////////////////
 //フィールドとの当たり判定
 /////////////////////////////////
-void Field::intersect(glm::vec3 _pos) {
+void Field::intersect(glm::vec3 _pos) 
+{
 
 	glm::vec3 orig = glm::vec3(_pos.x, -1, _pos.z);//始点で、直線上の任意の点
 	glm::vec3 dir = glm::vec3(0, 1, 0);//直線の向きで、直線を定義する
@@ -93,27 +100,33 @@ void Field::intersect(glm::vec3 _pos) {
 	int temporaryZ = _pos.z;//z座標の整数部分
 	float nowPosY = _pos.y;//現在のy座標
 
-	if ((_pos.x - temporaryX) + (_pos.z - temporaryZ) < 1) {
+	if ((_pos.x - temporaryX) + (_pos.z - temporaryZ) < 1)
+	{
 
 		//上の三角
 		vert0 = glm::vec3(temporaryX, vertex[(vtx * temporaryZ + temporaryX) * 3 + 1], temporaryZ);
 		vert1 = glm::vec3(temporaryX + 1, vertex[(vtx * temporaryZ + temporaryX + 1) * 3 + 1], temporaryZ);
 		vert2 = glm::vec3(temporaryX, vertex[((vtx * (temporaryZ + 1)) + temporaryX) * 3 + 1], temporaryZ + 1);
 
-		if (glm::intersectLineTriangle(orig, dir, vert0, vert1, vert2, distance)) {
-			if (_pos.y <= distance.x) {
+		if (glm::intersectLineTriangle(orig, dir, vert0, vert1, vert2, distance))
+		{
+			if (_pos.y <= distance.x) 
+			{
 				charcterHeight = distance.x;
 			}
 		}
 	}
-	else {
+	else
+	{
 		//下の三角
 		vert0 = glm::vec3(temporaryX + 1, vertex[(vtx * temporaryZ + temporaryX + 1) * 3 + 1], temporaryZ);
 		vert1 = glm::vec3(temporaryX, vertex[((vtx * (temporaryZ + 1)) + temporaryX) * 3 + 1], temporaryZ + 1);
 		vert2 = glm::vec3(temporaryX + 1, vertex[((vtx * (temporaryZ + 1)) + temporaryX + 1) * 3 + 1], temporaryZ + 1);
 
-		if (glm::intersectLineTriangle(orig, dir, vert0, vert1, vert2, distance)) {
-			if (_pos.y <= distance.x) {
+		if (glm::intersectLineTriangle(orig, dir, vert0, vert1, vert2, distance))
+		{
+			if (_pos.y <= distance.x) 
+			{
 				charcterHeight = distance.x;
 			}
 		}

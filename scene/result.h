@@ -3,7 +3,8 @@
 
 #include "scene.h"
 
-class Result :public Scene {
+class Result :public Scene
+{
 public:
 	void init();
 	void update();

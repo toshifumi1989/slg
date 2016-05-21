@@ -4,7 +4,8 @@
 #include "sequence.h"
 #include "../scene/scene.h"
 
-class Manager {
+class Manager 
+{
 public:
 
 	~Manager() {}
@@ -22,7 +23,8 @@ public:
 	Scene *scene;
 
 private:
-	Manager() {
+	Manager() 
+	{
 		_scene.change(&Manager::scenePlay);
 	}
 
