@@ -1,3 +1,6 @@
+#define _USE_MATH_DEFINES
+
+#include  <math.h>
 #include "play.h"
 #include "../library/field.h"
 #include "../library/camera.h"
@@ -10,33 +13,38 @@
 
 void Play::init()
 {
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	//フィールド----------------------------------------------------------------
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::FIELD_SETUP]);
 	field = new Field();
-	field->read("field.bmp");
-	field->setup();
+	field->setup("setup.bmp");
 
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::FIELD]);
+	field->read("field.bmp");
 
 	//カーソル設定-----------------------------------------------------------------------
 	cursor = new Cursor();
 	cursor->pos = glm::vec3(field->size / 2.f, 4, field->size / 2.f);
-	const float moveSpeed = 0.015f;
+	const float moveSpeed = 0.01f;
 	cursor->speed = glm::vec3(moveSpeed, 0, moveSpeed);
 
 	//プレイヤー--------------------------------------------------------------------------------
 
 	//プレイヤー陣地
-	{
+
 		//本陣
-		PlayerCamp tentativePlayerCamp;
-		tentativePlayerCamp.pos = glm::vec3(field->size / 2 - 75, 1, field->size / 2 - 75);
-		tentativePlayerCamp.size = glm::vec3(8.f, 3.f, 8.f);
-		playerCamp.push_back(tentativePlayerCamp);
-	}
+	playerBase = new PlayerCamp();
+	playerBase->pos = glm::vec3(field->size / 2 - 75, 1, field->size / 2 - 75);
+	playerBase->size = glm::vec3(10.f, 3.f, 10.f);
+	field->intersect(playerBase->pos);
+	playerBase->pos.y = field->charcterHeight + 1;
+
 
 	for (int i = 0; i < 2; i++)
 	{
 		PlayerCamp tentativePlayerCamp;
 		tentativePlayerCamp.pos = glm::vec3(field->size / 2 - rand() % 45 - 20, 1, field->size / 2 - rand() % 45 - 20);
+		field->intersect(tentativePlayerCamp.pos);
+		tentativePlayerCamp.pos.y = field->charcterHeight + 1;
 		playerCamp.push_back(tentativePlayerCamp);
 	}
 
@@ -44,6 +52,7 @@ void Play::init()
 	Player tentativePlayer;
 	for (int i = 0; i < 3; i++)
 	{
+		//初期位置
 		int playerInitPos = 10;
 		if (i == 0)
 		{
@@ -61,6 +70,9 @@ void Play::init()
 			tentativePlayer.pos = glm::vec3(field->size / 2.f - 60 + playerInitPos * (i / 2 + 1), 1, field->size / 2.f - 60 - playerInitPos * (i / 2 + 1));
 		}
 
+		//始めの向き
+		tentativePlayer.moveTargetPoint = glm::vec3(field->size / 2 + 75, 1, field->size / 2 + 75);
+
 		player.push_back(tentativePlayer);
 	}
 
@@ -68,29 +80,50 @@ void Play::init()
 
 	//エネミー-----------------------------------------------------------------------------
 	//エネミー陣地
-	{
-		//本陣
-		EnemyCamp tentativeEnemyCamp;
-		tentativeEnemyCamp.pos = glm::vec3(field->size / 2 + 75, 1, field->size / 2 + 75);
-		enemyCamp.push_back(tentativeEnemyCamp);
-	}
+
+	//本陣
+	enemyBase = new EnemyCamp();
+	enemyBase->pos = glm::vec3(field->size / 2 + 75, 1, field->size / 2 + 75);
+	enemyBase->size = glm::vec3(10.f, 3.f, 10.f);
+	field->intersect(enemyBase->pos);
+	enemyBase->pos.y = field->charcterHeight + 1;
+
 	for (int i = 0; i < 2; i++)
 	{
 		EnemyCamp tentativeEnemyCamp;
 		tentativeEnemyCamp.pos = glm::vec3(field->size / 2 + rand() % 45 + 20, 1, field->size / 2 + rand() % 45 + 20);
+		field->intersect(tentativeEnemyCamp.pos);
+		tentativeEnemyCamp.pos.y = field->charcterHeight + 1;
 		enemyCamp.push_back(tentativeEnemyCamp);
 	}
 
 	//エネミーキャラクター設定
 	Enemy tentativeEnemy;
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		tentativeEnemy.pos = glm::vec3(200, 1, 200);
+		//初期位置
+		int enemyInitPos = 10;
+		if (i == 0)
+		{
+			//中心
+			tentativeEnemy.pos = glm::vec3(field->size / 2.f + 60, 1, field->size / 2.f + 60);
+		}
+		else if (i % 2 == 0)
+		{
+			//右側
+			tentativeEnemy.pos = glm::vec3(field->size / 2.f + 60 - enemyInitPos * i / 2, 1, field->size / 2.f + 60 + enemyInitPos * i / 2);
+		}
+		else
+		{
+			//左側
+			tentativeEnemy.pos = glm::vec3(field->size / 2.f + 60 + enemyInitPos * (i / 2 + 1), 1, field->size / 2.f + 60 - enemyInitPos * (i / 2 + 1));
+		}
+
+		//始めの向き
+		tentativeEnemy.moveTargetPoint = glm::vec3(field->size / 2 - 75, 1, field->size / 2 - 75);
+
 		enemy.push_back(tentativeEnemy);
 	}
-
-
-
 
 
 	//カメラ設定---------------------------------------------------------------------
@@ -105,7 +138,9 @@ void Play::update()
 	//カーソル------------------------------
 	cursor->update();
 
-	//プレイヤーキャラクター----------------
+
+	//プレイヤー-------------------------------------------
+	//プレイヤーキャラクター
 	std::list < Player > ::iterator playerIter = player.begin();
 	while (playerIter != player.end())
 	{
@@ -115,6 +150,31 @@ void Play::update()
 		playerIter->update();
 
 		++playerIter;
+	}
+	//エネミー----------------------------------------------------------
+	//エネミー陣地
+
+	std::list< EnemyCamp >::iterator enemyCampIter = enemyCamp.begin();
+	while (enemyCampIter != enemyCamp.end())
+	{
+
+		if (enemyCampIter->HP <= 0)
+		{
+			enemyCampIter = enemyCamp.erase(enemyCampIter);
+		}
+		else
+		{
+			++enemyCampIter;
+		}
+
+	}
+
+	//エネミーキャラクター
+	std::list< Enemy >::iterator enemyIter = enemy.begin();
+	while (enemyIter != enemy.end())
+	{
+		enemyIter->update();
+		++enemyIter;
 	}
 
 	//カメラ--------------------------------
@@ -134,7 +194,8 @@ void Play::draw()
 	//カーソル-------------------------------
 	cursor->draw();
 
-	//プレイヤーキャラクター-----------------
+	//プレイヤー-----------------------------
+	//プレイヤーキャラクター
 	std::list< Player > ::iterator playerIter = player.begin();
 	while (playerIter != player.end())
 	{
@@ -142,16 +203,10 @@ void Play::draw()
 		++playerIter;
 	}
 
-	//エネミーキャラクター-------------------
-	std::list< Enemy > ::iterator enemyIter = enemy.begin();
-	while (enemyIter != enemy.end())
-	{
-		enemyIter->draw();
-		++enemyIter;
-	}
+	//プレイヤー陣地
 
+	playerBase->draw();//味方本陣
 
-	//プレイヤー陣地-------------------------
 	std::list< PlayerCamp > ::iterator playerCampIter = playerCamp.begin();
 	while (playerCampIter != playerCamp.end())
 	{
@@ -159,7 +214,21 @@ void Play::draw()
 		++playerCampIter;
 	}
 
-	//エネミー陣地--------------------------
+
+
+	//エネミー-------------------------------
+	//エネミーキャラクター
+	std::list< Enemy > ::iterator enemyIter = enemy.begin();
+	while (enemyIter != enemy.end())
+	{
+		enemyIter->draw();
+		++enemyIter;
+	}
+
+	//エネミー陣地
+
+	enemyBase->draw();//敵本陣
+
 	std::list< EnemyCamp > ::iterator enemyCampIter = enemyCamp.begin();
 	while (enemyCampIter != enemyCamp.end())
 	{

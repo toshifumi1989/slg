@@ -7,11 +7,12 @@
 class PlayerCamp : public Camp 
 {
 public:
-	void update();
+	
 	void draw();
 
 };
 
+extern PlayerCamp *playerBase;
 extern std::list< PlayerCamp > playerCamp;
 
 #endif

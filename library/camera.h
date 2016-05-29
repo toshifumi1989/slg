@@ -21,7 +21,8 @@ public:
 		target(0, 0, 0),
 		up(0, 1, 0),
 
-		cameraHeight(50)
+		cameraHeight(50),
+		specialKey(0)
 	{}
 
 	float angle;		//表示角度
@@ -39,6 +40,7 @@ public:
 	glm::vec3 up;		//カメラの上の向き
 
 	float cameraHeight;	//カメラの高さ
+	int specialKey;		//キーボードの↑↓の為
 
 	void update();		//カメラの更新
 	void draw();		//カメラの描画

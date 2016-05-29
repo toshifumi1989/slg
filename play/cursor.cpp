@@ -3,6 +3,7 @@
 #include "cursor.h"
 #include "../library/field.h"
 #include "../library/camera.h"
+#include "..//library/field.h"
 
 Cursor *cursor;
 extern Camera *camera;
@@ -40,10 +41,14 @@ void Cursor::update()
 	}
 
 
-	if (pos.x > field->size / 2 + 100 || pos.x < field->size / 2 - 100 || pos.z > field->size / 2 + 100 || pos.z < field->size / 2 - 100) {
+	if (pos.x > field->size / 2 + 100 || pos.x < field->size / 2 - 100 || pos.z > field->size / 2 + 100 || pos.z < field->size / 2 - 100)
+	{
 		pos = lastPos;
 
 	}
+
+	field->intersect(pos);
+	pos.y = field->charcterHeight + 5;
 
 
 	lastPos = pos;
@@ -68,7 +73,8 @@ void Cursor::draw()
 		glutSolidCone(1.0f, 1.0f, 3, 2);//ˆø”F(”¼Œa, ‚‚³, Z²‚Ü‚í‚è‚Ì•ªŠ„”, Z²‚É‰ˆ‚Á‚½•ªŠ„”)
 
 
-		if (collision == true) {
+		if (collision == true)
+		{
 			glColor3f(1, 0, 0);
 			glutWireCone(1.0f, 1.0f, 3, 1);
 		}

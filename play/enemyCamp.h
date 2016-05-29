@@ -8,11 +8,12 @@ class EnemyCamp :public Camp
 {
 
 public:
-	void update();
+
 	void draw();
 
 };
 
+extern EnemyCamp *enemyBase;
 extern std::list< EnemyCamp > enemyCamp;
 
 #endif

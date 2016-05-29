@@ -21,7 +21,6 @@ public:
 	glm::vec3 speed;	//移動速さ
 	float front;		//オブジェクトの向き
 
-	virtual void update() = 0;	//更新
 	virtual void draw() = 0;	//描画
 
 

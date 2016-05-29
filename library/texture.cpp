@@ -1,8 +1,10 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "texture.h"
 #include <assert.h>
 #include <Windows.h>
 
-GLuint textures[1];
+GLuint textures[TEXTURE_ID::TEXTURE_MAX];
 
 ///////////////////////////////////////
 //テクスチャ読み込み

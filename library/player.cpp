@@ -1,13 +1,17 @@
+#define _USE_MATH_DEFINES
+
 #include <stdlib.h>
+#include <math.h>
 #include "../glut.h"
 #include "player.h"
 #include "../play/cursor.h"
 #include "../play/enemyCamp.h"
-
+#include "field.h"
 
 std::list< Player > player;
 extern Cursor *cursor;
 extern std::list< EnemyCamp > enemyCamp;
+extern EnemyCamp *enemyBase;
 extern unsigned char keys[];
 
 //////////////////////////////////
@@ -15,9 +19,22 @@ extern unsigned char keys[];
 //////////////////////////////////
 void Player::update()
 {
-	if (moveOnFlag == true) {
-		pos += speed;
+
+	//向きの目標と現在の差
+	float differenceFront = targetFront - front;
+	targetFront = atan2(pos.x - moveTargetPoint.x, pos.z - moveTargetPoint.z) * 180 / M_PI;
+	if (differenceFront > 0)
+	{
+		front = front + differenceFront / 10.f;
 	}
+	else
+	{
+		front = front + differenceFront / 10.f;
+	}
+
+	//キャラの高さ
+	field->intersect(pos);
+	pos.y = field->charcterHeight + 1;
 
 	lastPos = pos;
 }
@@ -27,34 +44,55 @@ void Player::update()
 ///////////////////////////////////
 void Player::draw()
 {
+	glEnable(GL_DEPTH_TEST);
 	//プレイヤーキャラクター
 	glPushMatrix();
 	{
-		glEnable(GL_DEPTH_TEST);
+
 		glColor3f(characterColor.r, characterColor.g, characterColor.b);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(front, 0, 1, 0);
+
+		glPushMatrix();
 		{
 			glScalef(5.f, 1.f, 3.f);
 			glutSolidCube(1);
 		}
-		glDisable(GL_DEPTH_TEST);
-	}
-	glPopMatrix();
+		glPopMatrix();
 
-	glPushMatrix();
-	{
-		glEnable(GL_DEPTH_TEST);
-		glColor3f(characterColor.r, characterColor.g, characterColor.b);
-		glTranslatef(pos.x, pos.y, pos.z + 2);
-		glRotatef(front, 0, 1, 0);
+		glPushMatrix();
 		{
+			glTranslatef(0, 0, -2);
 			glScalef(2.f, 1.f, 3.f);
 			glutSolidCube(1);
 		}
-		glDisable(GL_DEPTH_TEST);
+		glPopMatrix();
+
+		//HP
+		glm::mat4 view;
+		glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&view);
+
+		glm::mat4 m = glm::inverse(view);
+		m[3][0] = m[3][1] = m[3][2] = 0;
+
+		glMultMatrixf((float*)&m);
+		glTranslatef(-1.5f, 3, 0);
+		glColor3f(0.8f, 0.8f, 0);
+		glScalef(3.f, 2.f, 0);
+		glBegin(GL_QUAD_STRIP);
+		{
+
+			glVertex3f(HP / 1000.f, 0.5f, 0);
+			glVertex3f(0, 0.5f, 0);
+			glVertex3f(HP / 1000.f, 0, 0);
+			glVertex3f(0, 0, 0);
+		}
+		glEnd();
+
 	}
 	glPopMatrix();
+
+	glDisable(GL_DEPTH_TEST);
 
 
 	//目標地点
@@ -62,13 +100,12 @@ void Player::draw()
 	{
 		glPushMatrix();
 		{
-			glEnable(GL_DEPTH_TEST);
 			glColor3f(characterColor.r, characterColor.g, characterColor.b);
 			glTranslatef(moveTargetPoint.x, moveTargetPoint.y, moveTargetPoint.z);
 			glRotatef(90, 1, 0, 0);	//向きを変えるため
 			glScalef(1.f, 1.f, 1.f);
-			glutSolidTorus(1, 2, 10, 10);
-			glDisable(GL_DEPTH_TEST);
+
+			glutSolidTorus(1, 2, 50, 50);
 		}
 		glPopMatrix();
 
@@ -88,7 +125,7 @@ void Player::collisionCursor()
 		+ (pos.z - cursor->pos.z) * (pos.z - cursor->pos.z);
 
 	//もし距離が近ければ
-	if (cursorToPlayer < 16)
+	if (cursorToPlayer < 25)
 	{
 		cursor->collision = true;
 		cursor->colorCounter += 0.05f;
@@ -127,6 +164,7 @@ void Player::move()
 	{
 		//キャラクターを黄色に
 		characterColor = glm::vec3(1, 1, 0);
+
 		if (keys[' '])
 		{
 			//移動の目的地設定
@@ -141,7 +179,12 @@ void Player::move()
 					0,
 					moveTargetPoint.z - pos.z);
 
-				speed = glm::normalize(PlayerToTargetPoint) * 0.1f;
+
+				float speedCoefficient = 0.1f;	//移動速度の係数
+
+				speed = glm::normalize(PlayerToTargetPoint) * speedCoefficient;
+
+
 
 			}
 		}
@@ -149,7 +192,7 @@ void Player::move()
 	else
 	{
 		//青に戻す
-		characterColor = glm::vec3(0.2f, 0.3f, 0.7f);
+		characterColor = glm::vec3(0.2f, 0.4f, 0.7f);
 	}
 
 	//目的地までの距離
@@ -160,7 +203,7 @@ void Player::move()
 
 
 	//目的地に着いたとき
-	if (playerToTargetPoint < 2)
+	if (playerToTargetPoint < 4)
 	{
 		//移動終わり
 		moveOnFlag = false;
@@ -168,6 +211,18 @@ void Player::move()
 
 	}
 
+	if (moveOnFlag == true)
+	{
+		if (OnAttack == true)
+		{
+			pos += speed / 2.f;
+		}
+		else
+		{
+			pos += speed;
+		}
+
+	}
 
 }
 
@@ -175,6 +230,31 @@ void Player::move()
 //敵陣地に攻撃
 ///////////////////////////////////
 void Player::attackToCamp() {
+
+	//本陣
+	const float playerToEnemyBase =
+		(pos.x - enemyBase->pos.x) * (pos.x - enemyBase->pos.x)
+		+ (pos.y - enemyBase->pos.y) * (pos.y - enemyBase->pos.y)
+		+ (pos.z - enemyBase->pos.z) * (pos.z - enemyBase->pos.z);
+
+	if (playerToEnemyBase < 200)
+	{
+		OnAttack = true;
+		enemyBase->damage = (Attack - enemyBase->Defense) / 10.f;
+
+		enemyBase->HP -= enemyBase->damage;
+
+		if (playerToEnemyBase < 100)
+		{
+			pos = lastPos;
+			moveOnFlag = false;
+		}
+	}
+	else
+	{
+		OnAttack = false;
+		enemyBase->damage = 0;
+	}
 
 	std::list< EnemyCamp >::iterator enemyCampIter = enemyCamp.begin();
 
@@ -187,11 +267,12 @@ void Player::attackToCamp() {
 
 		if (playerToEnemyCamp < 100)
 		{
-			const int Damage = Attack - enemyCampIter->Defense;
-			//enemyCampIter->damage = Damage / 10;
-			enemyCampIter->HP -= Damage / 10;// enemyCampIter->damage;
+			OnAttack = true;
+			enemyCampIter->damage = (Attack - enemyCampIter->Defense) / 10.f;
 
-			if (playerToEnemyCamp < 25)
+			enemyCampIter->HP -= enemyCampIter->damage;
+
+			if (playerToEnemyCamp < 50)
 			{
 				pos = lastPos;
 				moveOnFlag = false;
@@ -199,12 +280,11 @@ void Player::attackToCamp() {
 		}
 		else
 		{
+			OnAttack = false;
 			enemyCampIter->damage = 0;
 		}
 
 		++enemyCampIter;
 	}
-
-
 
 }

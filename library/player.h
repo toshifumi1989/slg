@@ -3,6 +3,7 @@
 
 #include <list>
 #include "character.h"
+#include "field.h"
 
 /////////////////////////////////////
 //プレイヤーキャラクターclass
@@ -11,10 +12,8 @@ class Player : public Character
 {
 public:
 	Player() :
-		characterColor(0.2f, 0.3f, 0.7f),
-
-		moveOnFlag(false),
-		moveTargetPoint(0, 0, 0)
+		characterColor(0.2f, 0.4f, 0.7f),
+		moveOnFlag(false)
 	{}
 	~Player(){}
 
@@ -27,7 +26,7 @@ public:
 	glm::vec3 characterColor;		//キャラクターの色
 
 	bool moveOnFlag;			//キャラクター移動指示をしているかいないか
-	glm::vec3 moveTargetPoint;	//移動目標
+	
 };
 
 extern std::list < Player > player;

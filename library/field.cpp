@@ -1,3 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <Windows.h>
 #include "field.h"
 #include"../glm/gtx/intersect.hpp"
 
@@ -6,8 +9,46 @@ Field *field;
 /////////////////////////////
 //フィールド準備
 /////////////////////////////
-void Field::setup() 
+void Field::setup(const char* _texture)
 {
+
+	FILE *pFile = fopen(_texture, "rb");
+	assert(pFile != NULL);
+
+	BITMAPFILEHEADER bf;
+	BITMAPINFOHEADER bi;
+
+	RGB *pixels;
+
+	fread(&bf, sizeof(BITMAPFILEHEADER), 1, pFile);
+	fread(&bi, sizeof(BITMAPINFOHEADER), 1, pFile);
+
+	int size = bi.biWidth *bi.biHeight * sizeof(RGB);
+	pixels = (RGB*)malloc(size);
+	fread(pixels, size, 1, pFile);
+
+	fclose(pFile);
+
+	//画像の上下反転
+	for (int p = 0; p < bi.biHeight / 2; p++)
+	{
+		for (int q = 0; q < bi.biWidth; q++)
+		{
+			RGB sub = pixels[bi.biWidth * p + q];
+			pixels[bi.biWidth * p + q] = pixels[bi.biWidth *(bi.biHeight - 1 - p) + q];
+			pixels[bi.biWidth *(bi.biHeight - 1 - p) + q] = sub;
+		}
+	}
+
+	glTexImage2D(
+		GL_TEXTURE_2D,		//GLenum target,
+		0,					//GLint level,
+		GL_RGB,				//GLint internalformat, 
+		bi.biWidth, bi.biHeight,	//GLsizei width, GLsizei height, 
+		0,					//GLint border, 
+		GL_RGB,				//GLenum format, 
+		GL_UNSIGNED_BYTE,	//GLenum type, 
+		pixels);			//const GLvoid *pixels
 
 	for (int z = 0; z < vtx; z++) 
 	{
@@ -18,9 +59,12 @@ void Field::setup()
 			tex.push_back((float)x / (vtx - 1));
 			tex.push_back((float)z / (vtx - 1));
 
+			float y = (pixels[vtx * z + x].r + pixels[vtx * z + x].g + pixels[vtx * z + x].b) / 255.f * 5;
+
+
 			//vertex
 			vertex.push_back((float)x );
-			vertex.push_back(0);
+			vertex.push_back(y);
 			vertex.push_back((float)z );
 
 			//normal
@@ -44,6 +88,8 @@ void Field::setup()
 			index.push_back(vtx * z + x + vtx + 1);
 		}
 	}
+
+	free(pixels);
 }
 
 
@@ -52,9 +98,10 @@ void Field::setup()
 ////////////////////////////////////
 void Field::draw() 
 {
+	glEnable(GL_DEPTH_TEST);
 	glPushMatrix();
 	{
-		glBindTexture(GL_TEXTURE_2D, textures[0]);
+		glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::FIELD]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -81,6 +128,7 @@ void Field::draw()
 
 	}
 	glPopMatrix();
+	glDisable(GL_DEPTH_TEST);
 }
 
 /////////////////////////////////

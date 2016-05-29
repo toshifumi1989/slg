@@ -4,10 +4,10 @@
 #include "manager.h"
 #include "../library/camera.h"
 #include "../play/cursor.h"
+#include "../library/texture.h"
 
 extern Camera *camera;
 extern Cursor *cursor;
-extern GLuint textures[1];
 unsigned char keys[256] = {};
 
 ////////////////////////////////////////////////////
@@ -65,6 +65,16 @@ void keyboardUp(unsigned char key, int x, int y)
 	keys[key] = 0;
 }
 
+void special(int key, int x, int y)
+{
+	camera->specialKey = key;
+
+}
+
+void specialUp(int key, int x, int y)
+{
+	camera->specialKey = 0;
+}
 ////////////////////////////////////////////////////
 //タイマー関数
 ////////////////////////////////////////////////////
@@ -120,6 +130,8 @@ int main(int argc, char *argv[])
 	//キーボード操作
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc(keyboardUp);
+	glutSpecialFunc(special);
+	glutSpecialUpFunc(specialUp);
 
 	glutIgnoreKeyRepeat(GL_TRUE);
 

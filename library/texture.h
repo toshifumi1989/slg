@@ -1,11 +1,18 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdlib.h>
 #include <vector>
 #include "../glut.h"
+
+enum TEXTURE_ID{
+	FIELD,
+	FIELD_SETUP,
+
+
+	TEXTURE_MAX,
+};
+
 
 class Texture
 {
@@ -25,6 +32,6 @@ public:
 
 };
 
-extern GLuint textures[1];
+extern GLuint textures[TEXTURE_ID::TEXTURE_MAX];
 
 #endif

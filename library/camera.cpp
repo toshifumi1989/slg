@@ -12,6 +12,15 @@ void Camera::update()
 	pos = glm::vec3(cursor->pos.x - cameraDistance, cursor->pos.y + cameraHeight, cursor->pos.z - cameraDistance);
 
 	target = cursor->pos;
+
+	if (specialKey == GLUT_KEY_UP)
+	{
+		cameraHeight += 0.5f;
+	}
+	else if (specialKey == GLUT_KEY_DOWN)
+	{
+		cameraHeight -= 0.5f;
+	}
 }
 
 void Camera::draw() 
