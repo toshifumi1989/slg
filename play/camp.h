@@ -13,10 +13,10 @@ public:
 		damage(0),
 		size(5,2,5)
 	{}
-	~Camp(){}
+	virtual ~Camp() {}
 
 	int HP;						//‘Ï‹v’l
-	unsigned int Defense;	//–hŒä—Í
+	unsigned int Defense;		//–hŒä—Í
 	unsigned int damage;		//ƒ_ƒ[ƒW—Ê
 	glm::vec3 size;				//w’n‚Ì‘å‚«‚³
 };

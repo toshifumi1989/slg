@@ -13,9 +13,13 @@ public:
 
 	Character() :
 		HP(1000),
-		Attack(20),
-		Defense(10), 
+		Attack(10),
+		Defense(10),
+		attackRange(10),
+		speedCoefficient(0.1f),
 		damage(0),
+		food(10000),
+
 		selectedFlag(false),
 		OnAttack(false),
 
@@ -23,12 +27,17 @@ public:
 		moveTargetPoint(0,0,0)
 	{}
 
-	~Character(){}
+	virtual ~Character(){}
 
-	unsigned int HP;				//‘Ï‹v’l
+	unsigned char type;				//•º‚Ìí—Ş(0:¬— 1:•à•º 2:‹R•º 3:‹|•º
+	int HP;				//‘Ï‹v’l
 	unsigned int Attack;			//UŒ‚—Í
 	unsigned int Defense;			//–hŒä—Í
-	int damage;						//”íƒ_ƒ[ƒW
+	float  attackRange;				//UŒ‚”ÍˆÍ
+	float speedCoefficient;			//ˆÚ“®‘¬“x‚ÌŒW”
+	unsigned int damage;			//”íƒ_ƒ[ƒW
+	unsigned int food;				//•º—Æ
+
 	bool selectedFlag;				//‘I‘ğ‚³‚ê‚Ä‚¢‚é
 	bool OnAttack;					//UŒ‚’†
 

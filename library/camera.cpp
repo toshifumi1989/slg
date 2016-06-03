@@ -6,7 +6,16 @@
 Camera *camera;
 extern Cursor *cursor;
 
-void Camera::update() 
+void Camera::setUp()
+{
+	const float Height = 100;
+	pos = glm::vec3(cursor->pos.x, Height, cursor->pos.z-10);
+
+	target = cursor->pos;
+
+}
+
+void Camera::update()
 {
 	const int cameraDistance = 20;
 	pos = glm::vec3(cursor->pos.x - cameraDistance, cursor->pos.y + cameraHeight, cursor->pos.z - cameraDistance);
@@ -23,14 +32,14 @@ void Camera::update()
 	}
 }
 
-void Camera::draw() 
+void Camera::draw()
 {
 
 	glMatrixMode(GL_PROJECTION);	// “Š‰e•ÏŠ·s—ñ‚Ìİ’è
 	glLoadIdentity();				// •ÏŠ·s—ñ‚Ì‰Šú‰»
 
 	//“§‹“Š‰e–@‚Ì‹‘ÌÏgluPerspactive(th, w/h, near, far);
-	gluPerspective(angle, aspect, nearDraw, farDraw); 
+	gluPerspective(angle, aspect, nearDraw, farDraw);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -44,5 +53,16 @@ void Camera::draw()
 
 void Camera::twoDimensionCamera()
 {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(
+		left, right,//GLdouble left,  right,
+		bottom, top,//GLdouble bottom,  top, 
+		10, -10);//GLdouble zNear,  zFar
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glColor3f(1, 1, 1);
+	
 
 }

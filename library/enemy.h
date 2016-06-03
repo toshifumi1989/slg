@@ -15,6 +15,6 @@ public:
 	void AI();			//AI
 };
 
-extern std::list< Enemy > enemy;
+extern std::list< Enemy* > enemy;
 
 #endif

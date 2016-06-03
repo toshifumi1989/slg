@@ -15,13 +15,12 @@ public:
 		speed(0, 0, 0),
 		front(0)
 	{}
+	virtual ~GameObject() {}
 
 	glm::vec3 pos;		//現在地
 	glm::vec3 lastPos;	//１フレーム前の位置
 	glm::vec3 speed;	//移動速さ
 	float front;		//オブジェクトの向き
-
-	virtual void draw() = 0;	//描画
 
 
 };

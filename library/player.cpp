@@ -8,18 +8,20 @@
 #include "../play/enemyCamp.h"
 #include "field.h"
 
-std::list< Player > player;
+std::list< Player* > player;
 extern Cursor *cursor;
-extern std::list< EnemyCamp > enemyCamp;
+extern std::list< EnemyCamp* > enemyCamp;
 extern EnemyCamp *enemyBase;
 extern unsigned char keys[];
+
+
 
 //////////////////////////////////
 //XV
 //////////////////////////////////
 void Player::update()
 {
-
+	//ƒvƒŒƒCƒ„[‚ÌŒü‚«‚ð•ÏX‚·‚é
 	//Œü‚«‚Ì–Ú•W‚ÆŒ»Ý‚Ì·
 	float differenceFront = targetFront - front;
 	targetFront = atan2(pos.x - moveTargetPoint.x, pos.z - moveTargetPoint.z) * 180 / M_PI;
@@ -42,7 +44,7 @@ void Player::update()
 ///////////////////////////////////
 //•`‰æ
 ///////////////////////////////////
-void Player::draw()
+void Player::draw(unsigned char _type)
 {
 	glEnable(GL_DEPTH_TEST);
 	//ƒvƒŒƒCƒ„[ƒLƒƒƒ‰ƒNƒ^[
@@ -53,6 +55,21 @@ void Player::draw()
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(front, 0, 1, 0);
 
+		//•à•º
+		if (_type == 1)
+		{
+			glRotatef(90, 1, 0, 0);			//Œü‚«‚ð•Ï‚¦‚é‚½‚ß
+			glutSolidTorus(1, 2, 50, 50);
+		}
+		//‹R•º
+		else if (_type == 2)
+		{
+			glRotatef(180, 0, 1, 0);			//Œü‚«‚ð•Ï‚¦‚é‚½‚ß
+			glutSolidCone(3, 5, 4, 4);
+		}
+		//‹|•º
+		else if (_type == 3)
+		{
 		glPushMatrix();
 		{
 			glScalef(5.f, 1.f, 3.f);
@@ -67,6 +84,9 @@ void Player::draw()
 			glutSolidCube(1);
 		}
 		glPopMatrix();
+		}
+
+
 
 		//HP
 		glm::mat4 view;
@@ -102,10 +122,9 @@ void Player::draw()
 		{
 			glColor3f(characterColor.r, characterColor.g, characterColor.b);
 			glTranslatef(moveTargetPoint.x, moveTargetPoint.y, moveTargetPoint.z);
-			glRotatef(90, 1, 0, 0);	//Œü‚«‚ð•Ï‚¦‚é‚½‚ß
+			
 			glScalef(1.f, 1.f, 1.f);
 
-			glutSolidTorus(1, 2, 50, 50);
 		}
 		glPopMatrix();
 
@@ -179,9 +198,6 @@ void Player::move()
 					0,
 					moveTargetPoint.z - pos.z);
 
-
-				float speedCoefficient = 0.1f;	//ˆÚ“®‘¬“x‚ÌŒW”
-
 				speed = glm::normalize(PlayerToTargetPoint) * speedCoefficient;
 
 
@@ -227,24 +243,24 @@ void Player::move()
 }
 
 ///////////////////////////////////
-//“Gw’n‚ÉUŒ‚
+//“G–{w‚ÉUŒ‚
 ///////////////////////////////////
-void Player::attackToCamp() {
-
+void Player::attackToBase()
+{
 	//–{w
 	const float playerToEnemyBase =
 		(pos.x - enemyBase->pos.x) * (pos.x - enemyBase->pos.x)
 		+ (pos.y - enemyBase->pos.y) * (pos.y - enemyBase->pos.y)
 		+ (pos.z - enemyBase->pos.z) * (pos.z - enemyBase->pos.z);
 
-	if (playerToEnemyBase < 200)
+	if (playerToEnemyBase < 20 * attackRange)
 	{
 		OnAttack = true;
 		enemyBase->damage = (Attack - enemyBase->Defense) / 10.f;
 
 		enemyBase->HP -= enemyBase->damage;
 
-		if (playerToEnemyBase < 100)
+		if (playerToEnemyBase < 10 * attackRange)
 		{
 			pos = lastPos;
 			moveOnFlag = false;
@@ -254,37 +270,6 @@ void Player::attackToCamp() {
 	{
 		OnAttack = false;
 		enemyBase->damage = 0;
-	}
-
-	std::list< EnemyCamp >::iterator enemyCampIter = enemyCamp.begin();
-
-	while (enemyCampIter != enemyCamp.end())
-	{
-		const float playerToEnemyCamp =
-			(pos.x - enemyCampIter->pos.x) * (pos.x - enemyCampIter->pos.x)
-			+ (pos.y - enemyCampIter->pos.y) * (pos.y - enemyCampIter->pos.y)
-			+ (pos.z - enemyCampIter->pos.z) * (pos.z - enemyCampIter->pos.z);
-
-		if (playerToEnemyCamp < 100)
-		{
-			OnAttack = true;
-			enemyCampIter->damage = (Attack - enemyCampIter->Defense) / 10.f;
-
-			enemyCampIter->HP -= enemyCampIter->damage;
-
-			if (playerToEnemyCamp < 50)
-			{
-				pos = lastPos;
-				moveOnFlag = false;
-			}
-		}
-		else
-		{
-			OnAttack = false;
-			enemyCampIter->damage = 0;
-		}
-
-		++enemyCampIter;
 	}
 
 }

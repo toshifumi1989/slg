@@ -42,6 +42,7 @@ public:
 	float cameraHeight;	//カメラの高さ
 	int specialKey;		//キーボードの↑↓の為
 
+	void setUp();		//戦闘準備用
 	void update();		//カメラの更新
 	void draw();		//カメラの描画
 	void twoDimensionCamera();//２次元の描画

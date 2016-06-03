@@ -5,7 +5,7 @@
 #include "../glut.h"
 #include "field.h"
 
-std::list< Enemy > enemy;
+std::list< Enemy* > enemy;
 
 
 ////////////////////////
@@ -50,7 +50,7 @@ void Enemy::draw()
 		}
 		glPopMatrix();
 
-
+		//HP•\Ž¦
 		glm::mat4 view;
 		glGetFloatv(GL_MODELVIEW_MATRIX, (float*)&view);
 
@@ -78,7 +78,5 @@ void Enemy::draw()
 
 void Enemy::AI()
 {
-
-
 
 }

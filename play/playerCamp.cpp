@@ -3,7 +3,7 @@
 #include "../glut.h"
 
 
-std::list< PlayerCamp > playerCamp;
+std::list< PlayerCamp* > playerCamp;
 PlayerCamp *playerBase;
 
 void PlayerCamp::draw()

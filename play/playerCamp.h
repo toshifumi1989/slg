@@ -13,6 +13,6 @@ public:
 };
 
 extern PlayerCamp *playerBase;
-extern std::list< PlayerCamp > playerCamp;
+extern std::list< PlayerCamp* > playerCamp;
 
 #endif

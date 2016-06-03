@@ -14,9 +14,10 @@ public:
 
 	static Manager* getInstance();
 
-	void sceneTitle(float delta);//シーンタイトル
-	void scenePlay(float delta);//シーンプレイ
-	void sceneResult(float delta);//シーンリザルト
+	void sceneTitle(float delta);	//シーンタイトル
+	void sceneSetUp(float delta);	//戦闘準備画面
+	void scenePlay(float delta);	//シーンプレイ
+	void sceneResult(float delta);	//シーンリザルト
 
 	Sequence<Manager> _scene;
 
@@ -25,7 +26,7 @@ public:
 private:
 	Manager() 
 	{
-		_scene.change(&Manager::scenePlay);
+		_scene.change(&Manager::sceneSetUp);
 	}
 
 	static Manager* instance;

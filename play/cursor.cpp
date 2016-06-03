@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "../scene/battleSetUp.h"
 #include "../glut.h"
 #include "cursor.h"
 #include "../library/field.h"
@@ -9,6 +10,44 @@ Cursor *cursor;
 extern Camera *camera;
 extern Field *field;
 extern unsigned char keys[256];
+
+///////////////////////
+//€”õ‰æ–Ê
+///////////////////////
+void Cursor::setup()
+{	
+	//zÀ•W‚ÌˆÚ“®
+	if (keys['w'] == 1)
+	{
+		pos.z += speed.x * camera->cameraHeight;
+	}
+	else if (keys['s'] == 1)
+	{
+		pos.z -= speed.z * camera->cameraHeight;
+		
+	}
+
+	//xÀ•W‚ÌˆÚ“®
+	if (keys['a'] == 1)
+	{
+		pos.x += speed.x * camera->cameraHeight;
+	}
+	else if (keys['d'] == 1)
+	{
+		pos.x -= speed.x * camera->cameraHeight;
+	}
+
+	if (pos.x > field->size - 2 || pos.x < 0 || pos.z < 0 || pos.z > field->size - 2 )
+	{
+		pos = lastPos;
+	}
+
+	field->intersect(pos);
+	pos.y = field->charcterHeight + 5;
+
+	lastPos = pos;
+
+}
 
 
 ///////////////////////
@@ -41,7 +80,7 @@ void Cursor::update()
 	}
 
 
-	if (pos.x > field->size / 2 + 100 || pos.x < field->size / 2 - 100 || pos.z > field->size / 2 + 100 || pos.z < field->size / 2 - 100)
+	if (pos.x > field->size / 2.f + 100 || pos.x < field->size / 2.f - 100 || pos.z > field->size / 2.f + 100 || pos.z < field->size / 2.f - 100)
 	{
 		pos = lastPos;
 

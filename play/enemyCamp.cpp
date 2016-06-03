@@ -2,7 +2,7 @@
 #include "enemyCamp.h"
 #include "../glut.h"
 
-std::list< EnemyCamp > enemyCamp;
+std::list< EnemyCamp* > enemyCamp;
 EnemyCamp *enemyBase;
 
 void EnemyCamp::draw()

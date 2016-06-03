@@ -14,6 +14,6 @@ public:
 };
 
 extern EnemyCamp *enemyBase;
-extern std::list< EnemyCamp > enemyCamp;
+extern std::list< EnemyCamp* > enemyCamp;
 
 #endif

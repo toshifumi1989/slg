@@ -15,6 +15,8 @@ public:
 	{}
 	~Cursor(){}
 
+	void setup();			//€”õ‰æ–Ê
+
 	void update();			//XV
 	void draw();			//•`‰æ
 	float colorCounter;		//“–‚½‚è”»’è’†‚ÌF•Ï‰»‚Ì‚½‚ß‚Ì•Ï”
