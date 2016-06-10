@@ -12,7 +12,7 @@ std::list< Player* > player;
 extern Cursor *cursor;
 extern std::list< EnemyCamp* > enemyCamp;
 extern EnemyCamp *enemyBase;
-extern unsigned char keys[];
+extern unsigned char keys[256];
 
 
 
@@ -37,6 +37,9 @@ void Player::update()
 	//キャラの高さ
 	field->intersect(pos);
 	pos.y = field->charcterHeight + 1;
+
+	//兵糧を消費
+	--food;
 
 	lastPos = pos;
 }
@@ -106,6 +109,15 @@ void Player::draw(unsigned char _type)
 			glVertex3f(0, 0.5f, 0);
 			glVertex3f(HP / 1000.f, 0, 0);
 			glVertex3f(0, 0, 0);
+
+			if (OnDefense == true)
+			{
+				glColor3f(1, 0, 0);
+				glVertex3f(HP / 1000.f + 0.1f, 0.6f, 0);
+				glVertex3f(-0.1f, 0.6f, 0);
+				glVertex3f(HP / 1000.f + 0.1f, -0.1f, 0);
+				glVertex3f(-0.1f, -0.1f, 0);
+			}
 		}
 		glEnd();
 
@@ -123,7 +135,10 @@ void Player::draw(unsigned char _type)
 			glColor3f(characterColor.r, characterColor.g, characterColor.b);
 			glTranslatef(moveTargetPoint.x, moveTargetPoint.y, moveTargetPoint.z);
 			
-			glScalef(1.f, 1.f, 1.f);
+			glRotatef(cursor->front, 0, 1, 0);
+			glRotatef(90, 1, 0, 0);	//カーソルを下向きにする為
+			glScalef(2.5f, 2.5f, 2.5f);
+			glutSolidCone(1.0f, 1.0f, 3, 2);//引数：(半径, 高さ, Z軸まわりの分割数, Z軸に沿った分割数)
 
 		}
 		glPopMatrix();
@@ -256,6 +271,7 @@ void Player::attackToBase()
 	if (playerToEnemyBase < 20 * attackRange)
 	{
 		OnAttack = true;
+		enemyBase->OnDefense = true;
 		enemyBase->damage = (Attack - enemyBase->Defense) / 10.f;
 
 		enemyBase->HP -= enemyBase->damage;
@@ -269,6 +285,7 @@ void Player::attackToBase()
 	else
 	{
 		OnAttack = false;
+		enemyBase->OnDefense = false;
 		enemyBase->damage = 0;
 	}
 

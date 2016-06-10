@@ -8,30 +8,14 @@
 class Play : public Scene
 {
 public:
+	Play() {}
+	~Play() {}
+
+
 	void init();
 	void update();
 	void draw();
 
-	template < typename TempDead > void dead(std::list< TempDead > _object)
-	{
-		std::list< TempDead >::iterator iter = _object.begin();
-		while (iter != _object.end())
-		{
-			if ((*iter)->HP <= 0)
-			{
-				delete (*iter);
-				iter = _object.erase(iter);
-				continue;
-			}
-			//else
-			//{
-			//	++iter;
-			//}
-
-
-			++iter;
-		}
-	};
 };
 
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include "../glut.h"
 
-enum TEXTURE_ID{
+enum TEXTURE_ID {
 	FIELD,
 	FIELD_SETUP,
 
@@ -17,6 +17,9 @@ enum TEXTURE_ID{
 class Texture
 {
 public:
+	Texture() {}
+	~Texture(){}
+
 	//êFÇÃRGBÇÃíl
 	typedef struct { unsigned char b, g, r; }RGB;
 

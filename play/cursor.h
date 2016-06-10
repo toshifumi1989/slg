@@ -19,8 +19,12 @@ public:
 
 	void update();			//XV
 	void draw();			//•`‰æ
+
 	float colorCounter;		//“–‚½‚è”»’è’†‚ÌF•Ï‰»‚Ì‚½‚ß‚Ì•Ï”
 	bool collision;			//“–‚½‚è”»’è
+
+	unsigned char playerNum;//playerID
+	unsigned char pCumpNum;	//playerCumpID
 };
 
 extern Cursor *cursor;

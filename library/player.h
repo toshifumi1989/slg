@@ -12,20 +12,18 @@ class Player : public Character
 {
 public:
 	Player() :
-		characterColor(0.2f, 0.4f, 0.7f),
-		moveOnFlag(false)
+		characterColor(0.2f, 0.4f, 0.7f)
 	{}
 	~Player(){}
+
+	glm::vec3 characterColor;		//キャラクターの色
+
 
 	void update();					//更新
 	void draw(unsigned char _type);	//描画
 	void collisionCursor();			//カーソル当たり判定
 	void move();					//キャラクター移動
 	void attackToBase();			//敵陣地に攻撃
-
-	glm::vec3 characterColor;		//キャラクターの色
-
-	bool moveOnFlag;				//キャラクター移動指示をしているかいないか
 
 	//list管理の敵に攻撃
 	template < typename TempEnemy > void attackToObject(std::list< TempEnemy > _object)
@@ -42,6 +40,7 @@ public:
 			if (playerToObject < 10 * attackRange)
 			{
 				OnAttack = true;
+				(*iter)->OnDefense = true;
 				(*iter)->damage = (Attack - (*iter)->Defense) / 10.f;
 
 				(*iter)->HP -= (*iter)->damage;
@@ -56,6 +55,7 @@ public:
 			else
 			{
 				OnAttack = false;
+				(*iter)->OnDefense = false;
 				(*iter)->damage = 0;
 			}
 

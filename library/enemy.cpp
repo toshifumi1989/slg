@@ -2,22 +2,42 @@
 
 #include <math.h>
 #include "enemy.h"
+#include "player.h"
+#include "../play/playerCamp.h"
+#include "../play/enemyCamp.h"
 #include "../glut.h"
 #include "field.h"
 
 std::list< Enemy* > enemy;
-
 
 ////////////////////////
 //XV
 ////////////////////////
 void Enemy::update()
 {
+	//Œü‚«
 	targetFront = atan2(pos.x - moveTargetPoint.x, pos.z - moveTargetPoint.z) * 180 / M_PI;
 	front = front + (targetFront - front) / 10.f;
 
+	//yÀ•W
 	field->intersect(pos);
 	pos.y = field->charcterHeight + 1;
+
+	//•º—Æ‚ÌÁ”ï
+	food--;
+
+	glm::vec3 enemyToTarget(
+		moveTargetPoint.x - pos.x,
+		0,
+		moveTargetPoint.z - pos.z);
+
+	if (moveOnFlag == true)
+	{
+		speed = glm::normalize(enemyToTarget) * speedCoefficient;
+
+		pos += speed;
+	}
+
 
 	lastPos = pos;
 }
@@ -68,6 +88,15 @@ void Enemy::draw()
 			glVertex3f(0, 0.5f, 0);
 			glVertex3f(HP / 1000.f, 0, 0);
 			glVertex3f(0, 0, 0);
+
+			if (OnDefense == true)
+			{
+				glColor3f(1, 0, 0);
+				glVertex3f(HP / 1000.f + 0.1f, 0.6f, 0);
+				glVertex3f(-0.1f, 0.6f, 0);
+				glVertex3f(HP / 1000.f + 0.1f, -0.1f, 0);
+				glVertex3f(-0.1f, -0.1f, 0);
+			}
 		}
 		glEnd();
 
@@ -76,7 +105,87 @@ void Enemy::draw()
 	glDisable(GL_DEPTH_TEST);
 }
 
-void Enemy::AI()
+void Enemy::attackToBase()
 {
+
+	const float enemyToObject =
+		(pos.x - playerBase->pos.x) * (pos.x - playerBase->pos.x)
+		+ (pos.y - playerBase->pos.y) * (pos.y - playerBase->pos.y)
+		+ (pos.z - playerBase->pos.z) * (pos.z - playerBase->pos.z);
+
+	if (enemyToObject < 10 * attackRange)
+	{
+		OnAttack = true;
+		playerBase->OnDefense = true;
+		playerBase->damage = (Attack - playerBase->Defense) / 10.f;
+
+		playerBase->HP -= playerBase->damage;
+
+		if (enemyToObject < 5 * attackRange)
+		{
+			pos = lastPos;
+			moveOnFlag = false;
+		}
+	}
+	else
+	{
+		OnAttack = false;
+		playerBase->OnDefense = false;
+		playerBase->damage = 0;
+		moveOnFlag = true;
+	}
+
+
+}
+
+void Enemy::AI(unsigned char _targetType, unsigned char _target, unsigned char _pattern)
+{
+	const float enemyToDefender =
+		(pos.x - moveTargetPoint.x) * (pos.x - moveTargetPoint.x)
+		+ (pos.y - moveTargetPoint.y) * (pos.y - moveTargetPoint.y)
+		+ (pos.z - moveTargetPoint.z) * (pos.z - moveTargetPoint.z);
+
+	//UŒ‚–Ú•W‚ªBase
+	if (_targetType == 0)
+	{
+
+		moveTargetPoint = playerBase->pos;
+
+	}
+	//UŒ‚–Ú•W‚ªplayerCamp
+	else if (_targetType == 1)
+	{
+		std::list< PlayerCamp* >::iterator playerCampIter = playerCamp.begin();
+		while (playerCampIter != playerCamp.end())
+		{
+			if ((*playerCampIter)->ID == _target)
+			{
+				moveTargetPoint = (*playerCampIter)->pos;
+
+			}
+
+		}
+
+
+		//w‚ğ‚·‚×‚Ä‰ó‚µ‚½‚ç–{w‚ğ–Úw‚·
+		if (playerCamp.empty() == true)
+		{
+			enemyBase->targetType = 0;
+		}
+	}
+	//UŒ‚–Ú•W‚ªplayer
+	else
+	{
+
+		std::list< Player* >::iterator playerIter = player.begin();
+		while (playerIter != player.end())
+		{
+			if ((*playerIter)->ID == _target)
+			{
+				moveTargetPoint = (*playerIter)->pos;
+
+			}	
+		}
+	}
 
 }

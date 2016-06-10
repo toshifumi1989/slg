@@ -7,6 +7,8 @@
 class PlayerCamp : public Camp 
 {
 public:
+	PlayerCamp(){}
+	~PlayerCamp(){}
 	
 	void draw();
 

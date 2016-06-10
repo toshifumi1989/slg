@@ -52,6 +52,7 @@ void BattleSetUp::init()
 		tentativeEnemyCamp->pos = glm::vec3(field->size / 2 + rand() % 45 + 20, 1, field->size / 2 + rand() % 45 + 20);
 		field->intersect(tentativeEnemyCamp->pos);
 		tentativeEnemyCamp->pos.y = field->charcterHeight + 1;
+		tentativeEnemyCamp->ID = i;
 		enemyCamp.push_back(tentativeEnemyCamp);
 	}
 
@@ -80,7 +81,7 @@ void BattleSetUp::init()
 
 		//n‚ß‚ÌŒü‚«
 		tentativeEnemy->moveTargetPoint = glm::vec3(field->size / 2 - 75, 1, field->size / 2 - 75);
-
+		tentativeEnemy->ID = i;
 		enemy.push_back(tentativeEnemy);
 	}
 
@@ -145,12 +146,12 @@ void BattleSetUp::typeChoice()
 			infantry->attackRange = 10;
 			infantry->speedCoefficient = 0.1f;
 			infantry->pos = cursor->pos;
-
+			infantry->ID = cursor->playerNum;
 			player.push_back(infantry);
 
 			playerCounter++;
 		}
-
+		cursor->playerNum += 1;
 		setUpScene = SetupScene::CursorMove;
 	}
 	//‹R•º
@@ -165,11 +166,12 @@ void BattleSetUp::typeChoice()
 			cavalry->attackRange = 10;
 			cavalry->speedCoefficient = 0.2f;
 			cavalry->pos = cursor->pos;
-
+			cavalry->ID = cursor->playerNum;
 			player.push_back(cavalry);
 
 			playerCounter++;
 		}
+		cursor->playerNum += 1;
 		setUpScene = SetupScene::CursorMove;
 	}
 	//‹|•º
@@ -184,11 +186,12 @@ void BattleSetUp::typeChoice()
 			archer->attackRange = 20;
 			archer->speedCoefficient = 0.1f;
 			archer->pos = cursor->pos;
-
+			archer->ID = cursor->playerNum;
 			player.push_back(archer);
 
 			playerCounter++;
 		}
+		cursor->playerNum += 1;
 		setUpScene = SetupScene::CursorMove;
 	}
 	//©w
@@ -198,12 +201,12 @@ void BattleSetUp::typeChoice()
 		{
 			PlayerCamp *camp = new PlayerCamp();
 			camp->pos = cursor->pos;
-
+			camp->ID = cursor->pCumpNum;
 			playerCamp.push_back(camp);
 
 			campCounter++;
 		}
-
+		cursor->pCumpNum += 1;
 		setUpScene = SetupScene::CursorMove;
 	}
 	//ƒJƒƒ‰

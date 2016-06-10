@@ -6,6 +6,9 @@
 class Tittle :public Scene
 {
 public:
+	Tittle(){}
+	~Tittle(){}
+
 	void init();
 	void update();
 	void draw();

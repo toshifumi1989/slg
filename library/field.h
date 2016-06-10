@@ -7,6 +7,8 @@
 class Field : public Texture 
 {
 public:
+	Field(){}
+	~Field(){}
 
 	int vtx = 256;						//フィールドのピクセル数
 	int size = vtx ;					//フィールドの広さ

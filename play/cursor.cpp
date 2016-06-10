@@ -104,9 +104,9 @@ void Cursor::draw()
 		glEnable(GL_DEPTH_TEST);
 
 		glColor3f(fabs(sin(colorCounter)), 1.f - 0.2f * fabs(sin(colorCounter)), fabs(sin(colorCounter)));
-		glTranslatef(cursor->pos.x, cursor->pos.y, cursor->pos.z);
+		glTranslatef(pos.x, pos.y, pos.z);
 
-		glRotatef(cursor->front, 0, 1, 0);
+		glRotatef(front, 0, 1, 0);
 		glRotatef(90, 1, 0, 0);	//カーソルを下向きにする為
 		glScalef(2.f, 2.f, 2.f);
 		glutSolidCone(1.0f, 1.0f, 3, 2);//引数：(半径, 高さ, Z軸まわりの分割数, Z軸に沿った分割数)

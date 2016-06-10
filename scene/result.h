@@ -6,6 +6,9 @@
 class Result :public Scene
 {
 public:
+	Result(){}
+	~Result(){}
+
 	void init();
 	void update();
 	void draw();

@@ -12,6 +12,8 @@ class Character : public GameObject
 public:
 
 	Character() :
+		type(0),
+		ID(0),
 		HP(1000),
 		Attack(10),
 		Defense(10),
@@ -22,6 +24,8 @@ public:
 
 		selectedFlag(false),
 		OnAttack(false),
+		OnDefense(false),
+		moveOnFlag(false),
 
 		targetFront(0),
 		moveTargetPoint(0,0,0)
@@ -30,7 +34,8 @@ public:
 	virtual ~Character(){}
 
 	unsigned char type;				//•º‚Ìí—Ş(0:¬— 1:•à•º 2:‹R•º 3:‹|•º
-	int HP;				//‘Ï‹v’l
+	unsigned char ID;				//”Ô†
+	int HP;							//‘Ï‹v’l
 	unsigned int Attack;			//UŒ‚—Í
 	unsigned int Defense;			//–hŒä—Í
 	float  attackRange;				//UŒ‚”ÍˆÍ
@@ -40,6 +45,9 @@ public:
 
 	bool selectedFlag;				//‘I‘ğ‚³‚ê‚Ä‚¢‚é
 	bool OnAttack;					//UŒ‚’†
+	bool OnDefense;					//UŒ‚‚ğó‚¯‚Ä‚¢‚é
+	bool moveOnFlag;				//ƒLƒƒƒ‰ƒNƒ^[ˆÚ“®w¦‚ğ‚µ‚Ä‚¢‚é‚©‚¢‚È‚¢‚©
+
 
 	float targetFront;				//–Ú•W‚Æ‚È‚éfront‚Ì’l
 
