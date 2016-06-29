@@ -11,7 +11,10 @@ class Cursor :public GameObject
 public:
 	Cursor():
 		colorCounter(0),
-		collision(false)
+		collision(false),
+		OnVictory(false),
+		playerNum(0),
+		pCampNum(0)
 	{}
 	~Cursor(){}
 
@@ -23,8 +26,10 @@ public:
 	float colorCounter;		//“–‚½‚è”»’è’†‚ÌF•Ï‰»‚Ì‚½‚ß‚Ì•Ï”
 	bool collision;			//“–‚½‚è”»’è
 
+	bool OnVictory;			//Ÿ”s
+
 	unsigned char playerNum;//playerID
-	unsigned char pCumpNum;	//playerCumpID
+	unsigned char pCampNum;	//playerCumpID
 };
 
 extern Cursor *cursor;

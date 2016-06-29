@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include  <math.h>
+#include "../library/wavFile.h"
 #include "battleSetUp.h"
 #include "../library/field.h"
 #include "../library/camera.h"
@@ -11,9 +12,29 @@
 #include "../play/enemyCamp.h"
 
 extern unsigned char keys[256];
+Texture *battleSet;
+Texture *selectType;
+Texture *posSelect;
 
 void BattleSetUp::init()
 {
+
+	//背景画像
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::BATTLE_SETUP]);
+	battleSet = new Texture();
+	battleSet->read_alpha("battleSet.bmp");
+
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::SELECT_TYPE]);
+	selectType = new Texture();
+	selectType->read_alpha("selectType.bmp");
+
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::SETUP_CHOICE]);
+	posSelect = new Texture();
+	posSelect->read_alpha("posSelect.bmp");
+
+	//音楽
+	bgm->playMusic(BGM::SETUP_BGM);
+
 	//フィールド----------------------------------------------------------------
 	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::FIELD_SETUP]);
 	field = new Field();
@@ -93,6 +114,7 @@ void BattleSetUp::init()
 
 void BattleSetUp::update()
 {
+
 	if (setUpScene == SetupScene::CursorMove)
 	{
 		cursorMove();
@@ -147,6 +169,7 @@ void BattleSetUp::typeChoice()
 			infantry->speedCoefficient = 0.1f;
 			infantry->pos = cursor->pos;
 			infantry->ID = cursor->playerNum;
+			infantry->moveTargetPoint = enemyBase->pos;
 			player.push_back(infantry);
 
 			playerCounter++;
@@ -167,6 +190,7 @@ void BattleSetUp::typeChoice()
 			cavalry->speedCoefficient = 0.2f;
 			cavalry->pos = cursor->pos;
 			cavalry->ID = cursor->playerNum;
+			cavalry->moveTargetPoint = enemyBase->pos;
 			player.push_back(cavalry);
 
 			playerCounter++;
@@ -187,6 +211,7 @@ void BattleSetUp::typeChoice()
 			archer->speedCoefficient = 0.1f;
 			archer->pos = cursor->pos;
 			archer->ID = cursor->playerNum;
+			archer->moveTargetPoint = enemyBase->pos;
 			player.push_back(archer);
 
 			playerCounter++;
@@ -201,12 +226,12 @@ void BattleSetUp::typeChoice()
 		{
 			PlayerCamp *camp = new PlayerCamp();
 			camp->pos = cursor->pos;
-			camp->ID = cursor->pCumpNum;
+			camp->ID = cursor->pCampNum;
 			playerCamp.push_back(camp);
 
 			campCounter++;
 		}
-		cursor->pCumpNum += 1;
+		cursor->pCampNum += 1;
 		setUpScene = SetupScene::CursorMove;
 	}
 	//カメラ
@@ -219,6 +244,8 @@ void BattleSetUp::draw()
 	glClearColor(0, 0.39f, 1, 0.5f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//カメラ---------------------------------------------
+	camera->draw();
 
 	playerSelectLine();
 
@@ -269,8 +296,139 @@ void BattleSetUp::draw()
 	}
 
 
-	//カメラ---------------------------------------------
-	camera->draw();
+	//2D描画
+	twoDimension();
+}
+
+void BattleSetUp::twoDimension()
+{
+	camera->twoDimensionCamera();
+
+	glPushMatrix();
+	{
+		char pCharacter[] = "Character :";
+		glTranslatef(500, 3600, 0);
+		glScalef(1.5f, 1.5f, 0);
+		glLineWidth(3);
+		for (int i = 0; pCharacter[i] != 0; i++) {
+			glutStrokeCharacter(
+				GLUT_STROKE_ROMAN,			//void *font,int
+				pCharacter[i]);						//character
+		}
+
+		{
+			char now[6];
+			sprintf_s(now, " %d", playerCounter);
+			glLineWidth(3);
+			for (int i = 0; now[i] != 0; i++) {
+				glutStrokeCharacter(
+					GLUT_STROKE_ROMAN,			//void *font,int
+					now[i]);						//character
+			}
+
+			char max[6];
+			sprintf_s(max, "/%d", maxPlayerCounter);
+			glLineWidth(3);
+			for (int i = 0; max[i] != 0; i++) {
+				glutStrokeCharacter(
+					GLUT_STROKE_ROMAN,			//void *font,int
+					max[i]);						//character
+			}
+		}
+
+		char camp[] = "CAMP :";
+		glTranslatef(500, 0, 0);
+		glLineWidth(3);
+		for (int i = 0; camp[i] != 0; i++) {
+			glutStrokeCharacter(
+				GLUT_STROKE_ROMAN,			//void *font,int
+				camp[i]);						//character
+		}
+
+		{
+			char now[6];
+			sprintf_s(now, " %d", campCounter);
+			glLineWidth(3);
+			for (int i = 0; now[i] != 0; i++) {
+				glutStrokeCharacter(
+					GLUT_STROKE_ROMAN,			//void *font,int
+					now[i]);						//character
+			}
+
+			char max[6];
+			sprintf_s(max, "/%d", maxCampCounter);
+			glLineWidth(3);
+			for (int i = 0; max[i] != 0; i++) {
+				glutStrokeCharacter(
+					GLUT_STROKE_ROMAN,			//void *font,int
+					max[i]);						//character
+			}
+		}
+	}
+	glPopMatrix();
+
+	glEnable(GL_TEXTURE_2D);
+
+
+	glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::BATTLE_SETUP]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glEnable(GL_BLEND);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glPushMatrix();
+	{
+		glTranslatef(-200, -300, 0);
+		glScalef(1.1f, 1.1f, 0);
+		glBegin(GL_QUADS);
+		{
+			glTexCoord2d(0, 1);
+			glVertex3d(camera->left, camera->bottom, 0);
+			glTexCoord2d(1, 1);
+			glVertex3d(camera->right, camera->bottom, 0);
+			glTexCoord2d(1, 0);
+			glVertex3d(camera->right, camera->top, 0);
+			glTexCoord2d(0, 0);
+			glVertex3d(camera->left, camera->top, 0);
+		}
+		glEnd();
+
+	}
+	glPopMatrix();
+
+
+
+	if (setUpScene == SetupScene::CursorMove)
+	{
+		glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::SETUP_CHOICE]);
+	}
+	else if (setUpScene == SetupScene::TypeChoice)
+	{
+		glBindTexture(GL_TEXTURE_2D, textures[TEXTURE_ID::SELECT_TYPE]);
+	}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glPushMatrix();
+	{
+		glTranslatef(200, 0, 0);
+		glBegin(GL_QUADS);
+		{
+			glTexCoord2d(0, 1);
+			glVertex3d(camera->left, camera->bottom, 0);
+			glTexCoord2d(1, 1);
+			glVertex3d(camera->right, camera->bottom, 0);
+			glTexCoord2d(1, 0);
+			glVertex3d(camera->right, camera->top, 0);
+			glTexCoord2d(0, 0);
+			glVertex3d(camera->left, camera->top, 0);
+		}
+		glEnd();
+	}
+	glPopMatrix();
+
 }
 
 void BattleSetUp::playerSelectLine()
@@ -301,4 +459,15 @@ void BattleSetUp::playerSelectLine()
 	}
 	glPopMatrix();
 	glDisable(GL_DEPTH_TEST);
+}
+
+void BattleSetUp::pDelete()
+{
+	//画像削除
+	delete battleSet;
+	delete selectType;
+	delete posSelect;
+
+	//音楽
+	bgm->stopMusic(BGM::SETUP_BGM);
 }

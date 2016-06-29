@@ -26,7 +26,7 @@ public:
 private:
 	Manager() 
 	{
-		_scene.change(&Manager::sceneSetUp);
+		_scene.change(&Manager::sceneTitle);
 	}
 
 	static Manager* instance;

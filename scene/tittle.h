@@ -12,6 +12,8 @@ public:
 	void init();
 	void update();
 	void draw();
+	void pDelete();
 };
+
 
 #endif

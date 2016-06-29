@@ -9,9 +9,6 @@
 #include "field.h"
 
 std::list< Player* > player;
-extern Cursor *cursor;
-extern std::list< EnemyCamp* > enemyCamp;
-extern EnemyCamp *enemyBase;
 extern unsigned char keys[256];
 
 
@@ -125,7 +122,6 @@ void Player::draw(unsigned char _type)
 	glPopMatrix();
 
 	glDisable(GL_DEPTH_TEST);
-
 
 	//–Ú•W’n“_
 	if (moveOnFlag == true)

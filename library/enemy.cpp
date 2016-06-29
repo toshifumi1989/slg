@@ -185,6 +185,7 @@ void Enemy::AI(unsigned char _targetType, unsigned char _target, unsigned char _
 				moveTargetPoint = (*playerIter)->pos;
 
 			}	
+			++playerIter;
 		}
 	}
 

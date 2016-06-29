@@ -5,6 +5,7 @@
 #include "../library/camera.h"
 #include "../play/cursor.h"
 #include "../library/texture.h"
+#include "../library/wavFile.h"
 
 extern Camera *camera;
 extern Cursor *cursor;
@@ -40,8 +41,8 @@ void mouse(int button, int state, int x, int y)
 void motion(int x, int y) 
 {
 
-	cursor->pos.x += (y - 350) / 1000.f;
-	cursor->pos.z += (x - 350) / 1000.f;
+	//cursor->pos.x += (y - 350) / 1000.f;
+	//cursor->pos.z += (x - 350) / 1000.f;
 
 	glutPostRedisplay();
 }
@@ -93,7 +94,8 @@ void timer(int value)
 ////////////////////////////////////////////////////
 void init(void) 
 {
-	glGenTextures(1, textures);
+	glGenTextures(TEXTURE_ID::TEXTURE_MAX, textures);
+	initMusic();
 }
 
 

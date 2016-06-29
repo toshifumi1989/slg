@@ -21,7 +21,7 @@ public:
 		target(0, 0, 0),
 		up(0, 1, 0),
 
-		cameraHeight(50),
+		cameraHeight(100),
 		specialKey(0)
 	{}
 

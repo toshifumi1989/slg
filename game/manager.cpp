@@ -5,10 +5,14 @@
 #include "../scene/play.h"
 #include "../scene/result.h"
 
+#include "../play/cursor.h"
+#include "../library/player.h"
+#include "../play/playerCamp.h"
+#include "../library/enemy.h"
+#include "../play/enemyCamp.h"
 
 Manager* Manager::instance = nullptr;
 extern unsigned char keys[256];
-
 
 //////////////////////////////////////
 //インスタンス
@@ -45,6 +49,13 @@ void Manager::sceneTitle(float delta)
 
 	scene->update();
 	scene->draw();
+
+	if (keys[' '] == 1)
+	{
+		scene->pDelete();
+		delete scene;
+		_scene.change(&Manager::sceneSetUp);
+	}
 }
 
 //////////////////////////////////////////////
@@ -65,6 +76,7 @@ void Manager::sceneSetUp(float delta)
 
 	if (keys[0x0d] == 1)
 	{
+		scene->pDelete();
 		delete scene;
 		_scene.change(&Manager::scenePlay);
 	}
@@ -78,10 +90,31 @@ void Manager::scenePlay(float delta)
 	if (_scene.getTime() == 0.0f)
 	{
 		scene = new Play();
+		scene->init();
 	}
 
 	scene->update();
 	scene->draw();
+
+
+	if (playerBase->HP <= 0 ||		//本陣陥落
+		player.empty() == true)	//プレイヤーキャラクター全滅
+	{
+		cursor->OnVictory = false;
+		scene->pDelete();
+		delete scene;
+		_scene.change(&Manager::sceneResult);
+	}
+	else if(
+		enemyBase->HP <= 0 ||		//敵本陣陥落
+		enemy.empty() == true)		//敵キャラクター全滅
+	{
+		cursor->OnVictory = true;
+		scene->pDelete();
+		delete scene;
+		_scene.change(&Manager::sceneResult);
+	}
+
 }
 
 /////////////////////////////////////////////
@@ -98,5 +131,14 @@ void Manager::sceneResult(float delta)
 
 	scene->update();
 	scene->draw();
+
+
+	if (keys[0x0d] == 1)
+	{
+		scene->pDelete();
+		delete scene;
+		_scene.change(&Manager::sceneTitle);
+	}
+
 }
 

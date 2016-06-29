@@ -26,11 +26,13 @@ public:
 	void typeChoice();				//兵種選択シーン
 	void draw();
 	void playerSelectLine();		//枠内にキャラクターを置ける
+	void pDelete();
+	void twoDimension();
 
-	unsigned char playerCounter;	//プレイヤーキャラの数
+	unsigned char playerCounter;	//現在プレイヤーキャラの数
 	unsigned char maxPlayerCounter;	//キャラの最大数
 
-	unsigned char campCounter;		//自陣の数
+	unsigned char campCounter;		//現在自陣の数
 	unsigned char maxCampCounter;	//自陣の最大数
 
 	unsigned char setUpScene = SetupScene::CursorMove;
